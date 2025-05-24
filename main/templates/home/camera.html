@@ -1,0 +1,69 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Utrack {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<style>
+    .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    #imgFrame,
+    #mp4Video3,
+    #mp4Video1,
+    #mp4Video2 {
+        border-radius: 10px;
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+    }
+
+    .d-block {
+        width: 60%;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+    <div class="d-block mb-4 mb-md-0">
+        <h2>Camera Live</h2>
+        <h1>لازم تقص واحد من المقاطع</h1>
+        <p id="randmsg"></p>
+
+        <!-- Video Grid (4 videos) -->
+        <div class="video-grid">
+            <!-- Real-Time Camera Feed 1 -->
+            <div class="video-container"><img id="imgFrame" /></div>
+
+            <!-- Real-Time Camera Feed 2 -->
+            <div class="video-container"><video id="mp4Video3" autoplay muted loop>
+                    <source src={{path}} type="video/mp4">
+                </video></div>
+
+            <!-- MP4 Video 1 -->
+            <div class="video-container"><video id="mp4Video1" autoplay muted loop>
+                    <source src={{path}} type="video/mp4">
+                </video></div>
+
+            <!-- MP4 Video 2 -->
+            <div class="video-container"><video id="mp4Video2" autoplay muted loop>
+                    <source src={{path}} type="video/mp4">
+                </video></div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script src="/static/js/frameSock.js"></script>
+{% endblock javascripts %}

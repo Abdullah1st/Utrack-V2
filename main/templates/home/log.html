@@ -1,0 +1,127 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Logs {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+	<div class="container mt-4">
+		<h2>Logs</h2>
+
+		<div class="table-responsive">
+			<table class="table table-hover">
+				<thead class="thead-light">
+					<tr>
+						<th></th>
+						<th>State</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for log in logs %}
+					<tr>
+						<td>
+							<button class="btn btn-sm btn-outline-primary toggle-details"
+								data-target="#logDetails{{ log.id }}">
+								<i class="fas fa-chevron-down"></i>
+							</button>
+						</td>
+						<td>
+							{% if log.state == 'ignored' %}
+							<span class="badge badge-danger" style="color:black; font-size:15px">{{ log.state_display }}</span>
+							<i class="bi bi-x-circle-fill fs-6" style="margin-left:18.5px; color:rgb(255, 0, 0);"></i>
+							{% elif log.state == 'confirmed' %}
+							<span class="badge badge-success" style="color:black; font-size:15px">{{ log.state_display }}</span>
+							<i class="bi bi-check-circle-fill fs-6" style="color: #4CAF50;"></i>
+							{% elif log.state == 'pending' %}
+							<span class="badge badge-warning" style="color:black; font-size:15px">{{ log.state_display }}</span>
+							<i class="bi bi-exclamation-octagon-fill fs-6"
+								style="margin-left: 17px; color:rgb(255, 130, 130);"></i>
+							{% else %}
+							<span class="badge badge-secondary" style="color:black; font-size:15px">{{ log.state_display }}</span>
+							{% endif %}
+						</td>
+						<td>
+							<button class="btn btn-sm btn-info view-log" data-logid="{{ log.id }}">View</button>
+						</td>
+					</tr>
+					<tr id="logDetails{{ log.id }}" class="collapse">
+						<td colspan="3">
+							<div class="container-fluid p-3">
+								<div class="row">
+									<div class="col-md-4">
+										<div class="detail-item">
+											<div class="detail-label">ID:</div>
+											<div class="detail-value">{{ log.id }}</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="detail-item">
+											<div class="detail-label">Image:</div>
+											<div class="detail-value">
+												{% if log.image %}
+												<img src="{{ log.image }}" alt="Log image" class="img-thumbnail">
+												{% else %}
+												<span class="text-muted">No image</span>
+												{% endif %}
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="detail-item">
+											<div class="detail-label">Date:</div>
+											<div class="detail-value">{{ log.date }}</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+					{% empty %}
+					<tr>
+						<td colspan="3" class="text-center">No logs available</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		// Toggle details functionality
+		document.querySelectorAll('.toggle-details').forEach(button => {
+			button.addEventListener('click', function () {
+				const target = this.getAttribute('data-target');
+				const icon = this.querySelector('i');
+
+				// Toggle the collapse
+				$(target).collapse('toggle');
+
+				// Rotate the icon
+				this.classList.toggle('collapsed');
+				if (this.classList.contains('collapsed')) {
+					icon.style.transform = 'rotate(-90deg)';
+				} else {
+					icon.style.transform = 'rotate(0deg)';
+				}
+			});
+		});
+
+		// View button functionality
+		document.querySelectorAll('.view-log').forEach(button => {
+			button.addEventListener('click', function () {
+			});
+		});
+	});
+</script>
+{% endblock javascripts %}

@@ -1,0 +1,6 @@
+__pycache__
+*/__pycache__
+*images
+db.*
+detector/ML_model
+main/static/vids
