@@ -1,13 +1,5 @@
 from rest_framework import serializers
-from .models import Dashboard, Violation, Student
-
-
-class DashboardSerializer(serializers.ModelSerializer):
-    date = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
-    class Meta:
-        model = Dashboard
-        fields = ['student_count','violation_count','date']
-
+from .models import Violation, Student
 
 class StudentSerializer(serializers.ModelSerializer):
     date = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
