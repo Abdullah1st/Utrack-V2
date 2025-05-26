@@ -19,10 +19,10 @@ class VideoCamera(object):
         self.video.release()
 
     def read_frame(self):   # Frame reader
-        ret, frame = self.video.read()
-        if not ret and self.counter <= 8000:
-            self.counter += 1
-            return self.dummy_jpeg.tobytes()
+        _, frame = self.video.read()
+        # if not ret and self.counter <= 8000:
+        #     self.counter += 1
+        #     return self.dummy_jpeg.tobytes()
         _, jpeg = cv2.imencode('.jpg', frame)
         return jpeg.tobytes()
     

@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             // Clear previous image and set new one
             alertImage.innerHTML = `<img src="${host}/images/alerts/${violator.imageID}/" style="width: 100%; height: 100%; object-fit: contain;">`;
-        }, 50);
+        }, 70);
 
         document.getElementById('confirmm-btn').onclick = function () {
             handleAlertResponse(violator.id, true);

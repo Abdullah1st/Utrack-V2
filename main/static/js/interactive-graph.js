@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let counter = 1;
                 data.violation_objects.reverse();
                 data.violation_objects.forEach(element => {
-                    if (element.state == 'confirmed' && !isAfter6AM(element.date)) {
+                    if (element.state == 'confirmed' && isAfter6AM(element.date)) {
                         updateGraph(counter++, element.date.slice(11,19))
                     }
                 });

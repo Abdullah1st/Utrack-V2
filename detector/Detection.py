@@ -1,9 +1,9 @@
 from ultralytics import YOLO
 from datetime import datetime
-import os
+import os, asyncio
 from django.utils import timezone
 from django.http import JsonResponse
-from .models import Violation
+from .models import Violation, Student
 from main.models import Secretary
 from django.conf import settings
 from django.core.files import File
@@ -17,15 +17,11 @@ class UniformDetection:
         self.alert = set()
 
     def remove_image(self, path):
-        image_extensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff']
-        for filename in os.listdir(path):
-            if any(filename.lower().endswith(ext) for ext in image_extensions):
-                file_path = os.path.join(path, filename)
-                try:
-                    os.remove(file_path)
-                    print(f"Deleted: {file_path}")
-                except Exception as e:
-                    print(f"Error deleting {file_path}: {e}")
+        try:
+            os.remove(f'{path}/{os.listdir(path)[0]}')
+            print(f"done deleting ai_images file")
+        except Exception as e:
+            print(f"Error deleting ai_images file: {e}")
 
     @database_sync_to_async
     def _get_secretary(self):
@@ -35,7 +31,13 @@ class UniformDetection:
     def _get_student(self):
         return Student.objects.first()
 
-    def detect(self, id_image, id):
+    @database_sync_to_async
+    def _create_violation(self, violation, cropped_path, id_image):
+        with open(cropped_path, 'rb') as f:
+            violation.image.save(f'{id_image}.jpg', File(f), save=True)
+        return violation 
+
+    async def detect(self, id_image, id):
         results = self.model(f"ai_images/{id_image}.jpg")
         if results[0].boxes is None or len(results[0].boxes) == 0:
             print(f"⚠ No detection found.")
@@ -54,10 +56,13 @@ class UniformDetection:
             cropped_path = os.path.join(settings.BASE_DIR, 'ai_images', f'{id_image}.jpg')
             print(f"Alert! Unknown class detected for ID {id}")
             
+            secretary, student = await asyncio.gather(
+                self._get_secretary(),
+                self._get_student()
+            )
             # Create and save the violation
             violation = Violation(
-                # secretary=await self._get_secretary(),
-                # student=await self._get_student()
+                secretary=secretary,
+                student=student
             )
-            with open(cropped_path, 'rb') as f:
-                violation.image.save(f'{id_image}.jpg', File(f), save=True)
+            await self._create_violation(violation, cropped_path, id_image)

@@ -10,4 +10,4 @@ class Secretary(AbstractUser):
         verbose_name_plural = "Secretaries"
 
     def __str__(self):
-        return self
+        return self.username

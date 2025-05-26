@@ -31,7 +31,7 @@ class FrameConsumer(AsyncWebsocketConsumer):
 
     async def send_frames(self):
         try:
-            # await websockets.connect(f'ws://{self.scope['headers'][0][1].decode('utf-8')}/ws/modelFrames/')
+            await websockets.connect(f'ws://{self.scope['headers'][0][1].decode('utf-8')}/ws/modelFrames/')
             while True:
                 await self.channel_layer.group_send(
                     'frameGroup',
@@ -95,7 +95,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
                 )
             currentTime = datetime.now().timestamp()
             while True:
-                await asyncio.sleep(0.3)
+                await asyncio.sleep(0.2)
                 violator:list = await self.loop.run_in_executor(self.exec, lambda: list(self.vioTable.filter(state='pending', isNotified=False)))
                 if violator and currentTime < violator[0].date.timestamp():
                     await self.channel_layer.group_send(
@@ -131,8 +131,8 @@ class AiConsumer(AsyncWebsocketConsumer):
         await super().disconnect(close_code)
 
     async def frame_handler(self, event):
-        await asyncio.to_thread(self.detector.main, self.convert_bytes_to_frame(event['frame']))
-        # await self.detector.main(self.convert_bytes_to_frame(event['frame']))
+        # await asyncio.to_thread(self.detector.main, self.convert_bytes_to_frame(event['frame']))
+        await self.detector.main(self.convert_bytes_to_frame(event['frame']))
     
     def convert_bytes_to_frame(self, frame_bytes):
         return cv2.imdecode(np.frombuffer(frame_bytes, np.uint8), cv2.IMREAD_COLOR)
