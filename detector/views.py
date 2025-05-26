@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from .Ai_Detection import detection
 
-from .models import Violation, Student
+from .models import Violation, Student, Leaving
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -36,9 +36,6 @@ def stream():
         cap.release()
         cv2.destroyAllWindows()
 
-# def video_feed(request):
-#     return StreamingHttpResponse(stream(), content_type='multipart/x-mixed-replace; boundary=frame')
-
 class DashboardListView(APIView):
     def get(self, request, type):
         all_students = Student.objects.all()
@@ -65,7 +62,8 @@ class TodayListView(APIView):
             date__gte=today_6am,
             state='confirmed'
         ).count()
-        return Response({'studentsCount': todayStudents, 'violationsCount': todayViolations, 'todayDate': today.strftime('%A %b %d')})
+        leavings = Leaving.objects.first().leaving
+        return Response({'studentsCount': todayStudents, 'violationsCount': todayViolations, 'leavingsCount': leavings, 'todayDate': today.strftime('%A %b %d')})
 
     
 class ViolationListView(APIView):

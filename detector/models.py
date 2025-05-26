@@ -12,6 +12,13 @@ class Student(models.Model):
         get_latest_by = 'date'
 
 
+class Leaving(models.Model):
+    leaving = models.IntegerField(default=0)
+    class Meta:
+        db_table = 'detector_Leaving'
+        verbose_name_plural = "Leavings"
+
+
 class Violation(models.Model):
     student = models.ForeignKey(
         Student,

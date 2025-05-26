@@ -3,7 +3,7 @@ import numpy as np
 from ultralytics import YOLO
 from .tracker import *
 from .Detection import * 
-from .models import Student
+from .models import Student, Leaving
 from channels.db import database_sync_to_async
 
 class detection:
@@ -29,6 +29,12 @@ class detection:
     @database_sync_to_async
     def _create_student(self):
         return Student.objects.create(is_student=True)
+
+    @database_sync_to_async
+    def _leaving(self):
+        leaving_obj = Leaving.objects.first()
+        leaving_obj.leaving += 1
+        leaving_obj.save()
 
     async def main(self, frame):
 
@@ -87,6 +93,7 @@ class detection:
             if id in self.people_exiting:
                 results4 = cv2.pointPolygonTest(self.area2,(x4,y4),False)
                 if results4>=0:
+                    await self._leaving()
                     self.exiting.add(id)
                     
 
