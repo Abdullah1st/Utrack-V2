@@ -5,19 +5,25 @@ class Student(models.Model):
     id = models.AutoField(primary_key=True)
     is_student = models.BooleanField(default=True)
     date = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return f"Student_id {self.id}"
     class Meta:
         ordering = ['-id'] 
         get_latest_by = 'date'
 
 
 class Violation(models.Model):
-    student_id = models.ForeignKey(
+    student = models.ForeignKey(
         Student,
+        null=True,
+        blank=True,
         on_delete=models.CASCADE,
         related_name='violations'
     )
-    secretary_id = models.ForeignKey(
+    secretary = models.ForeignKey(
         'main.Secretary',
+        null=True,
+        blank=True,
         on_delete=models.CASCADE,
         related_name='violations'
     )

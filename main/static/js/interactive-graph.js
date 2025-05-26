@@ -32,9 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 let counter = 1;
                 data.violation_objects.reverse();
-                console.log(data.violation_objects[0].date)
                 data.violation_objects.forEach(element => {
-                    if (element.state == 'confirmed' && isAfter6AM(element.date)) {
+                    if (element.state == 'confirmed' && !isAfter6AM(element.date)) {
                         updateGraph(counter++, element.date.slice(11,19))
                     }
                 });

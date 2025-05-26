@@ -55,7 +55,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+AUTH_USER_MODEL = 'main.Secretary'
+
 ROOT_URLCONF = 'Utrack.urls'
+
+LOGIN_URL = '/login/'
+
+LOGIN_REDIRECT_URL = '/home/'
 
 TEMPLATES = [
     {

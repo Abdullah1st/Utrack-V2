@@ -1,22 +1,21 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
     # The home (camera) page
     path('', views.redirecting, name='home'),
     path('home/', views.home, name='home'),
-    # path('alertClient/', views.alertStream, name='alertClient'),
-    # path('pushAlert/', views.pushAlert, name='pushAlert'),
 
     # Login page
-    path('login/', views.login, name="login"),
-    path('logout/', views.logout, name="logout"),
+    path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name="login"),
+    path('logout/', auth_views.LogoutView.as_view(template_name='accounts/login.html'), name="logout"),
 
-    # Statistics and analysis page
+    # dashboard page
     path('dashboard/', views.dashboard, name='dashboard'),
 
     # Logs page (Detailed info)
     path('logs/', views.log, name='log'),
-    path('images/alerts/violator<str:imgID>.png/', views.getImage),
+    path('images/alerts/<str:imgID>/', views.getImage),
 ]

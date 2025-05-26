@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.showAlert = showAlert;
     window.showNot = showNotifications;
     window.vCounter = document.getElementById('violations-counter');
+    window.sCounter = document.getElementById('students-counter');
     let doneNotified = true;
-    let sCounter = document.getElementById('students-counter');
     const host = window.location.origin;
     const notificationContainer = document.getElementById('notification-container');
     const dropdownMenu = document.getElementById('notificationDropdown');
@@ -23,15 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             // Clear previous image and set new one
-            alertImage.innerHTML = `<img src="${host}/images/alerts/violator${violator.imageID}.png/" style="width: 100%; height: 100%; object-fit: contain;">`;
-        }, 300);
+            alertImage.innerHTML = `<img src="${host}/images/alerts/${violator.imageID}/" style="width: 100%; height: 100%; object-fit: contain;">`;
+        }, 50);
 
         document.getElementById('confirmm-btn').onclick = function () {
             handleAlertResponse(violator.id, true);
             alertContainer.style.display = 'none';
             if (vCounter) {
                 vCounter.innerHTML = parseInt(vCounter.innerHTML) + 1;
-                sCounter.innerHTML = parseInt(sCounter.innerHTML) + 1;
                 updateGraph(vCounter.innerHTML, violator.date);
             }
         };
@@ -95,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     handleNotification = function (id, isConfirmed, date) {
         handleAlertResponse(id, isConfirmed);
         document.getElementById(id).style.display = 'none';
-        if (timeAgo(date).isToday && isConfirmed) {
+        if (vCounter){
             vCounter.innerHTML = parseInt(vCounter.innerHTML) + 1;
         }
     }
@@ -107,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="row align-items-center" id=${notification.id}>
                   <div class="col-auto" id='avatarContainer'>
                     <!-- Avatar -->
-                    <img src="${host}/images/alerts/violator${notification.imageID}.png/" style="width: 100px; height: 100%; object-fit: contain;">
+                    <img src="${host}/images/alerts/${notification.imageID}/" style="width: 100px; height: 100%; object-fit: contain;">
                   </div>
                   <div class="col ps-0 ms-2">
                     <div class="d-flex justify-content-between align-items-center">
@@ -133,5 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
                   </div>
                 </div><br>
         `;
+        
     }
 });

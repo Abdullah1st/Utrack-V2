@@ -15,8 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.onerror = error => console.log('WebSocket Error ' + error.message);
 
     window.addEventListener('beforeunload', function() {
-        if (socket.readyState === WebSocket.OPEN) {
-            socket.close();
-        }
+        socket.close();
+
     });
 });

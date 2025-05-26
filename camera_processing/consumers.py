@@ -1,8 +1,9 @@
 import asyncio, json, cv2, websockets
 import numpy as np
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
 from .camera import VideoCamera
-# from detector.Ai_Detection import detection
+from detector.Ai_Detection import detection
 from detector.models import Violation, Student
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
@@ -26,7 +27,7 @@ class FrameConsumer(AsyncWebsocketConsumer):
         await super().disconnect(close_code)
 
     async def receive(self, text_data=None, bytes_data=None):
-        print()
+        pass
 
     async def send_frames(self):
         try:
@@ -49,7 +50,6 @@ class FrameConsumer(AsyncWebsocketConsumer):
 
 class DashboardConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        from detector.Ai_Detection import detection
         await self.channel_layer.group_add('dashGroup', self.channel_name)
         await self.accept()
         self.exec = ThreadPoolExecutor()
@@ -87,7 +87,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
                         'data': {
                             'notification': {
                                 'id': f'{violation.id}',
-                                'imageID': f'{str(violation.image)[15:22]}',
+                                'imageID': f'{str(violation.image)[7:]}',
                                 'date': f'{str(violation.date)[:19]}'
                             }
                         }
@@ -105,7 +105,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
                             'data': {
                                 'violator': {
                                     'id': f'{violator[0].id}',
-                                    'imageID': f'{str(violator[0].image)[15:22]}',
+                                    'imageID': f'{str(violator[0].image)[7:]}',
                                     'date': f'{str(violator[0].date)[:19]}'
                                 }
                             }
@@ -115,25 +115,24 @@ class DashboardConsumer(AsyncWebsocketConsumer):
             print(e)
 
     async def dashHandler(self, event):
-        print(event)
+
         json.dumps(event['data'])
         await self.send(text_data=json.dumps(event['data']))
-        print('finished sending')
 
 
 class AiConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.channel_layer.group_add('frameGroup', self.channel_name)
         await self.accept()
-        global detector
-        detector = detection()
+        self.detector = detection()
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard('frameGroup', self.channel_name)
         await super().disconnect(close_code)
 
     async def frame_handler(self, event):
-        await asyncio.to_thread(detector.main, self.convert_bytes_to_frame(event['frame']))
+        await asyncio.to_thread(self.detector.main, self.convert_bytes_to_frame(event['frame']))
+        # await self.detector.main(self.convert_bytes_to_frame(event['frame']))
     
     def convert_bytes_to_frame(self, frame_bytes):
         return cv2.imdecode(np.frombuffer(frame_bytes, np.uint8), cv2.IMREAD_COLOR)

@@ -5,7 +5,7 @@ import cv2
 from datetime import datetime, time, timedelta
 from django.utils import timezone
 
-from .Ai_Detection import *
+from .Ai_Detection import detection
 
 from .models import Violation, Student
 
@@ -21,7 +21,7 @@ def index(request):
 
 def stream():
     ai_object = detection()
-    cap = cv2.VideoCapture('detector/ML_model/videopeople.mp4')
+    cap = cv2.VideoCapture('main/static/vids/videopeople.mp4')
     
     if not cap.isOpened():
         print("Failed to open video file")

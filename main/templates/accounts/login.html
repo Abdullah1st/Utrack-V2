@@ -33,17 +33,17 @@
                 </div>
 
                 <!-- Login Form -->
-                <form class="login100-form validate-form" method="POST">
+                <form class="login100-form validate-form" method="POST" action="{% url 'login' %}">
                     {% csrf_token %}
                     <span class="login100-form-title">Secretary Login</span>
 
-                        {% for msg in messages %}
-                            <p style="color: red; text-align: center;">{{msg}}</p>
-                        {% endfor %}
+                    {% for msg in messages %}
+                    <p class="alert alert-{{ msg.tags }}" style="color: red; text-align: center;">{{msg}}</p>
+                    {% endfor %}
 
 
                     <div class="wrap-input100 validate-input">
-                        <input class="input100" type="text" name="username" placeholder="Username" >
+                        <input class="input100" type="text" name="username" placeholder="Username">
                         <span class="focus-input100"></span>
                         <span class="symbol-input100">
                             <i class="fa fa-user" aria-hidden="true"></i>
@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="wrap-input100 validate-input">
-                        <input class="input100" type="password" name="password" placeholder="Password" >
+                        <input class="input100" type="password" name="password" placeholder="Password">
                         <span class="focus-input100"></span>
                         <span class="symbol-input100">
                             <i class="fa fa-lock" aria-hidden="true"></i>
@@ -61,9 +61,6 @@
                     <div class="container-login100-form-btn">
                         <button type="submit" class="login100-form-btn">Login</button>
                     </div>
-
-                    <!-- Redirect to Dashboard After Login -->
-                    <input type="hidden" name="next" value="camera.html">
                     <br></br>
                     <br></br>
                     <br></br>

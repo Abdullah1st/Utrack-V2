@@ -12,11 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
             showNot(data.notification); 
         }
         else if (data.violator){
+            if (vCounter){
+                sCounter.innerHTML = parseInt(sCounter.innerHTML) + 1;
+            }
             showAlert(data.violator);
-        }
-        else if (data == 'new_entry'){
-            console.log('new entry ! ! ! !!  ! ! ! !');
-            sCounter.innerHTML = parseInt(sCounter.innerHTML) + 1;
         }
     }
 

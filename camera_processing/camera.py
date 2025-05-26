@@ -7,7 +7,8 @@ class VideoCamera(object):
     def __init__(self):
         # url = 'rtsp://abdullah:@192.168.100.100:8081/h264_ulaw.sdp'
         # 'http://192.168.100.100:4747/video'
-        self.video = cv2.VideoCapture(0)
+        # 'main/static/vids/videopeople.mp4'
+        self.video = cv2.VideoCapture('main/static/vids/videopeople.mp4')
         self.counter:int = 0
         self.dummy_frame = np.zeros((480, 640, 3), dtype=np.uint8)
         _, self.dummy_jpeg = cv2.imencode('.jpg', self.dummy_frame)
