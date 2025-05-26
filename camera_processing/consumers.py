@@ -132,7 +132,11 @@ class AiConsumer(AsyncWebsocketConsumer):
 
     async def frame_handler(self, event):
         # await asyncio.to_thread(self.detector.main, self.convert_bytes_to_frame(event['frame']))
-        await self.detector.main(self.convert_bytes_to_frame(event['frame']))
+        # await self.detector.main(self.convert_bytes_to_frame(event['frame']))
+        await asyncio.get_event_loop().run_in_executor(
+            None,
+            lambda: asyncio.run(self.detector.main(self.convert_bytes_to_frame(event['frame'])))
+        )
     
     def convert_bytes_to_frame(self, frame_bytes):
         return cv2.imdecode(np.frombuffer(frame_bytes, np.uint8), cv2.IMREAD_COLOR)

@@ -2,14 +2,12 @@ import cv2, asyncio, random, torch, os
 import numpy as np
 from ultralytics import YOLO
 from .tracker import *
-from datetime import datetime
 from .Detection import * 
 from .models import Student
 from channels.db import database_sync_to_async
 
 class detection:
     def __init__(self):
-        
         self.tracker = Tracker()
         self.Detection = UniformDetection()
         self.people_entering = {}
@@ -67,17 +65,19 @@ class detection:
                     student = await self._create_student()
                     self.created_students[id] = student  # Store the student object
                     print(f"Created new student ID: {student.id} for tracking ID {id}")
+                    
                     person_crop = frame[y3:y4, x3:x4]
-                    output_folder = "ai_images"
+                    _, buffer = cv2.imencode('.jpg', person_crop, 
+                        [int(cv2.IMWRITE_JPEG_QUALITY), 65,
+                         int(cv2.IMWRITE_JPEG_OPTIMIZE), 1])
+                    image_data = buffer.tobytes()
+                    
                     id_image = int(''.join(str(random.randint(0, 9)) for _ in range(7)))
-                    
-                    cropped_image_path = os.path.join(output_folder, f"{id_image}.jpg")
-                    cv2.imwrite(cropped_image_path, person_crop)
-                    
-                    print(f" Cropped image saved: {cropped_image_path}")
-                    await self.Detection.detect(id_image,id)
+
+                    print(f" Cropped image saved: In-Memory")
+                    await self.Detection.detect(id_image, id, image_data)
                     self.entering.add(id)
-                    self.Detection.remove_image("ai_images")
+                    # self.Detection.remove_image("ai_images")
 
             results3 = cv2.pointPolygonTest(self.area1, (x4,y4), False)
             if results3 >=0:
