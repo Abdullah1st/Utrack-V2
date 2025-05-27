@@ -6,7 +6,7 @@ from .camera import VideoCamera
 from detector.Ai_Detection import detection
 from detector.models import Violation, Student
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class FrameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -80,6 +80,8 @@ class DashboardConsumer(AsyncWebsocketConsumer):
         try:
             violations:list = await self.loop.run_in_executor(self.exec, lambda: list(self.vioTable.filter(state='pending')))
             for violation in violations:
+                dt = datetime.strptime(str(violation.date)[:19], '%Y-%m-%d %H:%M:%S')
+                new_dt = dt + timedelta(hours=2)
                 await self.channel_layer.group_send(
                     'dashGroup',
                     {
@@ -88,16 +90,18 @@ class DashboardConsumer(AsyncWebsocketConsumer):
                             'notification': {
                                 'id': f'{violation.id}',
                                 'imageID': f'{str(violation.image)[7:]}',
-                                'date': f'{str(violation.date)[:19]}'
+                                'date': f'{new_dt.strftime('%Y-%m-%d %H:%M:%S')}'
                             }
                         }
                     }
                 )
             currentTime = datetime.now().timestamp()
             while True:
-                await asyncio.sleep(0.2)
+                await asyncio.sleep(1)
                 violator:list = await self.loop.run_in_executor(self.exec, lambda: list(self.vioTable.filter(state='pending', isNotified=False)))
                 if violator and currentTime < violator[0].date.timestamp():
+                    dt = datetime.strptime(str(violator[0].date)[:19], '%Y-%m-%d %H:%M:%S')
+                    new_dt = dt + timedelta(hours=2)
                     await self.channel_layer.group_send(
                         'dashGroup',
                         {
@@ -106,7 +110,7 @@ class DashboardConsumer(AsyncWebsocketConsumer):
                                 'violator': {
                                     'id': f'{violator[0].id}',
                                     'imageID': f'{str(violator[0].image)[7:]}',
-                                    'date': f'{str(violator[0].date)[:19]}'
+                                    'date': f'{new_dt.strftime('%Y-%m-%d %H:%M:%S')}'
                                 }
                             }
                         }

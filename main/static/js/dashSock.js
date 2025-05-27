@@ -12,12 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
             showNot(data.notification); 
         }
         else if (data.violator){
-            console.log('helo there');
-            
+            socket.send(JSON.stringify({
+                'acknowledgement': data.violator.id
+            }))
             if (vCounter){
                 sCounter.innerHTML = parseInt(sCounter.innerHTML) + 1;
             }
-            
             showAlert(data.violator);
         }
     }

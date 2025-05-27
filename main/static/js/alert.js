@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const alertContainer = document.getElementById('alert-container');
         const alertImage = document.getElementById('alert-image');
-        socket.send(JSON.stringify({
-            'acknowledgement': violator.id
-        }))
+        // socket.send(JSON.stringify({
+        //     'acknowledgement': violator.id
+        // }))
 
         setTimeout(() => {
             // Clear previous image and set new one
