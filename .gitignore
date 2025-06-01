@@ -4,3 +4,4 @@ __pycache__
 db.*
 detector/ML_model
 main/static/vids
+*/migrations
